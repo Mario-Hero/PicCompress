@@ -8,7 +8,7 @@ import sys
 import os
 from PIL import Image
 
-SIZE_CUT = 5   # picture over this size should be compressed. Units: MB
+SIZE_CUT = 4   # picture over this size should be compressed. Units: MB
 QUALITY = 90  # 90 is good, this number should not be smaller than 80.
 
 
@@ -26,14 +26,16 @@ def compressImg(file):
 
 def compress(folder):
     if os.path.isdir(folder):
+        print(folder)
         file_list = os.listdir(folder)
         for file in file_list:
             print(file)
-            if os.path.isdir(file):
-                compress(folder + file + "/")
+            if os.path.isdir(folder+"/"+file):
+                #print(folder +"/"+ file)
+                compress(folder +"/"+file)
             else:
                 if isPic(file):
-                    compressImg(folder+file)
+                    compressImg(folder+"/"+file)
     else:
         if isPic(folder):
             compressImg(folder)
