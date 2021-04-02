@@ -19,26 +19,30 @@ def isPic(name):
 
 def compressImg(file):
     #print("The size of", file, "is: ", os.path.getsize(file))
-    if os.path.getsize(file) > (SIZE_CUT * 1024 * 1024):
-        im = Image.open(file)
-        im.save(file, quality=QUALITY)
+    im = Image.open(file)
+    im.save(file, quality=QUALITY)
 
 
 def compress(folder):
-    if os.path.isdir(folder):
-        print(folder)
-        file_list = os.listdir(folder)
-        for file in file_list:
-            print(file)
-            if os.path.isdir(folder+"/"+file):
-                #print(folder +"/"+ file)
-                compress(folder +"/"+file)
-            else:
-                if isPic(file):
-                    compressImg(folder+"/"+file)
-    else:
-        if isPic(folder):
-            compressImg(folder)
+    try:
+        if os.path.isdir(folder):
+            print(folder)
+            file_list = os.listdir(folder)
+            for file in file_list:
+                if os.path.isdir(folder+"/"+file):
+                    #print(folder +"/"+ file)
+                    compress(folder +"/"+file)
+                else:
+                    if isPic(file):
+                        if os.path.getsize(folder + "/" + file) > (SIZE_CUT * 1024 * 1024):
+                            compressImg(folder + "/" + file)
+                            print(file)
+        else:
+            if isPic(folder):
+                if os.path.getsize(folder) > (SIZE_CUT * 1024 * 1024):
+                    compressImg(folder)
+    except BaseException:
+        return
 
 
 if __name__ == '__main__':
@@ -46,4 +50,4 @@ if __name__ == '__main__':
         #print(folder)
         compress(folder)
     print("Finish.")
-    os.system("pause")
+    #os.system("pause")
