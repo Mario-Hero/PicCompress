@@ -1,6 +1,6 @@
 # PicCompress
 
-批量图像压缩的python脚本
+用Python批量压缩图片
 
 把文件夹或图片直接拖入即可。
 
