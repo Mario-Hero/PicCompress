@@ -12,7 +12,6 @@ SIZE_CUT = 6   # picture over this size should be compressed. Units: MB
 QUALITY = 90  # 90 is good, this number should not be smaller than 80.
 
 
-
 SIZE_CUT_B = SIZE_CUT * 1024 * 1024
 
 
@@ -21,10 +20,32 @@ def isPic(name):
     return namelower.endswith("jpg") or namelower.endswith("jpeg") or namelower.endswith("png")
 
 
+def fileRename(file, n):
+    pathName, fileName = os.path.split(file)
+    try:
+        cutPos = fileName.rfind('.')
+    except:
+        # print(fileName + '(' + str(n) + ')')
+        return os.path.join(pathName, fileName + '(' + str(n) + ')')
+    else:
+        # print(fileName[:cutPos] + '(' + str(n) + ')' + fileName[cutPos:])
+        return os.path.join(pathName, fileName[:cutPos] + '(' + str(n) + ')' + fileName[cutPos:])
+
+
 def compressImg(file):
     #print("The size of", file, "is: ", os.path.getsize(file))
     im = Image.open(file)
-    im.save(file, quality=QUALITY)
+    i = 1
+    moveTemp = fileRename(file, i)
+    while os.path.exists(moveTemp):
+        i = i + 1
+        moveTemp = fileRename(moveTemp, i)
+    im.save(moveTemp, quality=QUALITY)
+    if os.path.getsize(moveTemp) < os.path.getsize(file):
+        os.remove(file)
+        os.rename(moveTemp, file)
+    else:
+        os.remove(moveTemp)
 
 
 def compress(folder):
