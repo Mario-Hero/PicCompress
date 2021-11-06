@@ -14,6 +14,8 @@ QUALITY = 90  # 90 is good, this number should not be smaller than 80.
 
 SIZE_CUT_B = SIZE_CUT * 1024 * 1024
 
+spaceSavedThisTime = 0
+
 
 def isPic(name):
     namelower = name.lower()
@@ -33,17 +35,21 @@ def fileRename(file, n):
 
 
 def compressImg(file):
+    global spaceSavedThisTime
     #print("The size of", file, "is: ", os.path.getsize(file))
     im = Image.open(file)
     i = 1
+    originalName = file
     moveTemp = fileRename(file, i)
     while os.path.exists(moveTemp):
         i = i + 1
-        moveTemp = fileRename(moveTemp, i)
+        moveTemp = fileRename(originalName, i)
     im.save(moveTemp, quality=QUALITY)
-    if os.path.getsize(moveTemp) < os.path.getsize(file):
+    spaceSaved = os.path.getsize(file) - os.path.getsize(moveTemp)
+    if spaceSaved > 1024 * 1024:   # save > 1MB
         os.remove(file)
         os.rename(moveTemp, file)
+        spaceSavedThisTime = spaceSavedThisTime + spaceSaved/(1024*1024)
     else:
         os.remove(moveTemp)
 
@@ -75,5 +81,7 @@ if __name__ == '__main__':
     for folder in sys.argv[1:]:
         #print(folder)
         compress(folder)
+    print(" ")
     print("Finish.")
+    print("Save " + str(round(spaceSavedThisTime,1)) + " MB.")
     #os.system("pause")
