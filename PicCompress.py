@@ -24,14 +24,11 @@ def isPic(name):
 
 def fileRename(file, n):
     pathName, fileName = os.path.split(file)
-    try:
+    if '.' in fileName:
         cutPos = fileName.rfind('.')
-    except:
-        # print(fileName + '(' + str(n) + ')')
-        return os.path.join(pathName, fileName + '(' + str(n) + ')')
-    else:
-        # print(fileName[:cutPos] + '(' + str(n) + ')' + fileName[cutPos:])
         return os.path.join(pathName, fileName[:cutPos] + '(' + str(n) + ')' + fileName[cutPos:])
+    else:
+        return os.path.join(pathName, fileName + '(' + str(n) + ')')
 
 
 def compressImg(file):
