@@ -40,9 +40,10 @@ QUALITY = 95 表示压缩质量95，这个质量基本上就是最好的了，�
 DEFAULT_TARGET 表示默认的压缩目标，即双击打开该脚本所要压缩的目标，可以是文件或文件夹地址。
 
 There are two parameters at the beginning of the file:
+
 SIZE_CUT = 6  means that pictures larger than 6MB will be compressed
+
 QUALITY = 95 indicates that the compression quality is 95. This quality is almost the best. 
+
 DEFAULT_TARGET indicates the default compression target if you don't drag any files or folders into the script, which can be address of a file or folder.
-
-
 
