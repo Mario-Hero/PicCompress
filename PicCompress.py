@@ -6,16 +6,24 @@
 
 import sys
 import os
-from PIL import Image
+try:
+    from PIL import Image
+except ImportError:
+    os.system('pip install pillow')
+    from PIL import Image
+
+# you can change it >>>>>
 
 SIZE_CUT = 6   # picture over this size should be compressed. Units: MB
-QUALITY = 90  # 90 is good, this number should not be smaller than 80.
+QUALITY = 95  # 95 is good, this number should not be smaller than 80.
+DEFAULT_TARGET = ''
+
+# <<<<< you can change it
 
 
 SIZE_CUT_B = SIZE_CUT * 1024 * 1024
-
 spaceSavedThisTime = 0
-
+spaceNotSavedTime = 0
 
 def isPic(name):
     namelower = name.lower()
@@ -32,14 +40,14 @@ def fileRename(file, n):
 
 
 def compressImg(file):
-    global spaceSavedThisTime
+    global spaceSavedThisTime, spaceNotSavedTime
     #print("The size of", file, "is: ", os.path.getsize(file))
     im = Image.open(file)
     i = 1
     originalName = file
     moveTemp = fileRename(file, i)
     while os.path.exists(moveTemp):
-        i = i + 1
+        i += 1
         moveTemp = fileRename(originalName, i)
     im.save(moveTemp, quality=QUALITY)
     spaceSaved = os.path.getsize(file) - os.path.getsize(moveTemp)
@@ -48,12 +56,15 @@ def compressImg(file):
         os.rename(moveTemp, file)
         spaceSavedThisTime = spaceSavedThisTime + spaceSaved/(1024*1024)
     else:
+        spaceNotSavedTime += 1
         os.remove(moveTemp)
 
 
 def compress(folder):
+    global spaceNotSavedTime
     try:
         if os.path.isdir(folder):
+            spaceNotSavedTime = 0
             print(folder)
             file_list = os.listdir(folder)
             for file in file_list:
@@ -63,6 +74,8 @@ def compress(folder):
                     compress(temp)
                 else:
                     if isPic(file):
+                        if spaceNotSavedTime > 5:
+                            break
                         if os.path.getsize(temp) > SIZE_CUT_B:
                             compressImg(temp)
                             print(file)
@@ -75,9 +88,12 @@ def compress(folder):
 
 
 if __name__ == '__main__':
-    for folder in sys.argv[1:]:
-        #print(folder)
-        compress(folder)
+    if len(sys.argv) > 1:
+        for folder in sys.argv[1:]:
+            #print(folder)
+            compress(folder)
+    elif DEFAULT_TARGET:
+        compress(DEFAULT_TARGET)
     print(" ")
     print("Finish.")
     print("Save " + str(round(spaceSavedThisTime,1)) + " MB.")
