@@ -4,10 +4,13 @@
 
 把文件夹或图片直接拖入脚本即可。
 
+**不建议使用该脚本。如果有条件，可以把图片转换为avif格式，文件能更小，用这个: https://github.com/Mario-Hero/AVIFConvert**
+
 Python script for batch image compression 
 
 Just drag folders or pictures intothe script.
 
+**It is not recommended to use it. If possible, convert the image to AVIF format for much smaller file size. Use this: https://github.com/Mario-Hero/AVIFConvert**
 
 
 ## 依赖 Dependency
